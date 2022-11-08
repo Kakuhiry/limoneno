@@ -12,12 +12,12 @@
 
 ActiveRecord::Schema.define(version: 2019_11_12_201442) do
 
-  create_table "dataset_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "dataset_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "dataset_id"
     t.string "name"
     t.string "mime"
     t.text "text"
-    t.text "metadata", size: :long, collation: "utf8mb4_bin"
+    t.json "metadata"
     t.text "url"
     t.integer "status"
     t.boolean "stored"
@@ -26,27 +26,27 @@ ActiveRecord::Schema.define(version: 2019_11_12_201442) do
     t.text "raw_text"
   end
 
-  create_table "datasets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "datasets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "project_dataset_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "project_dataset_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
     t.integer "dataset_id"
     t.integer "dataset_item_id"
-    t.text "clasification", size: :long, collation: "utf8mb4_bin"
-    t.text "tags", size: :long, collation: "utf8mb4_bin"
+    t.json "clasification"
+    t.json "tags"
     t.integer "status"
-    t.boolean "documents"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "documents"
   end
 
-  create_table "project_datasets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "project_datasets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "dataset_id"
     t.integer "project_id"
     t.datetime "created_at", precision: 6, null: false
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_201442) do
     t.index ["dataset_id", "project_id"], name: "index_project_datasets_on_dataset_id_and_project_id"
   end
 
-  create_table "project_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "project_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "user_id"
     t.integer "project_id"
     t.datetime "created_at", precision: 6, null: false
@@ -62,18 +62,18 @@ ActiveRecord::Schema.define(version: 2019_11_12_201442) do
     t.index ["user_id", "project_id"], name: "index_project_users_on_user_id_and_project_id"
   end
 
-  create_table "projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.integer "clasification_type"
-    t.text "entities", size: :long, collation: "utf8mb4_bin"
-    t.text "clasifications", size: :long, collation: "utf8mb4_bin"
+    t.json "entities"
+    t.json "clasifications"
     t.integer "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.string "password_digest"

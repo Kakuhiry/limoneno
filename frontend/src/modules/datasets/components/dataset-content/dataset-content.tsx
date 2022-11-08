@@ -1,3 +1,4 @@
+ // @ts-nocheck
 import * as React from 'react';
 import './dataset-content.scss';
 import 'antd/dist/antd.css';
@@ -46,6 +47,7 @@ export class DatasetContentComponent extends React.Component<any> {
     if (this.state.dataset && this.state.dataset.items.length > 0) {
       return this.props.dataset.items.map( (item: DatasetItem) => {
         return (
+          // @ts-ignore
           <DatasetItemComponent 
             dataset={this.state.dataset} 
             transfer={this.transferItem.bind(this)}
