@@ -6,7 +6,7 @@ on:
     branches:
       - "main"
     paths:
-      - "frontend/src/**"
+      - "backend/src/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -21,3 +21,4 @@ jobs:
       - uses: amannn/action-semantic-pull-request@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
