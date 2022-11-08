@@ -46,7 +46,6 @@ jobs:
 #         git push
       
   build:
-    if: ${{ needs.changes.outputs.changes != '[]' && needs.changes.outputs.changes != '' }}
     name: Build & Push Image
     runs-on: ubuntu-latest
     # needs:
