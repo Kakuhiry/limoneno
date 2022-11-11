@@ -23,10 +23,8 @@ jobs:
         node-version: 14
   
     - name: App versioning
-      working-directory: backend
       run: |
-        npm config set git-tag-version false
-        npm version patch
+        cd backend && npm version patch
 
     - name: Configure git
       run: |
