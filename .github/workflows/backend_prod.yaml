@@ -1,5 +1,6 @@
 name: Deploy to ECR - Backend
 on:
+  workflow_dispatch:
   push:
     branches: [ ci/cd-testing ]
     # paths:
@@ -10,40 +11,42 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # bump:
-  #   name: Bump version
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Check out code
-  #     uses: actions/checkout@v2
+  bump:
+    name: Bump version
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
   
-  #   - name: App versioning
-  #     working-directory: backend
-  #     run: |
-  #       npm config set git-tag-version false
-  #       npm version patch
+    - name: App versioning
+      working-directory: backend
+      run: |
+        npm config set git-tag-version false
+        npm version patch
 
-  #   - name: Configure git
-  #     run: |
-  #       git config user.name "Github-Actions"
-  #       git config user.email "<>"
+    - name: Configure git
+      run: |
+        git config user.name "Github-Actions"
+        git config user.email "<>"
 
-  #   - name: Get version
-  #     id: version
-  #     uses: notiz-dev/github-action-json-property@release
-  #     with:
-  #       path: "backend/package.json"
-  #       prop_path: "version"
+    - name: Get version
+      id: version
+      uses: notiz-dev/github-action-json-property@release
+      with:
+        path: "backend/package.json"
+        prop_path: "version"
 
-  #   - name: Commit new version
-  #     working-directory: backend
-  #     run: |
-  #       git add package.json
-  #       git commit -m "release(backend): ${{ steps.version.outputs.prop }}"
-  #       git push
+    - name: Commit new version
+      working-directory: backend
+      run: |
+        git add package.json
+        git commit -m "release(backend): ${{ steps.version.outputs.prop }}"
+        git push
       
   build:
-    name: Build & Push Image 
+    name: Build & Push Image
+    needs:
+      - bump
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -65,7 +68,21 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: app
-        IMAGE_TAG: "0.1.0"
+        IMAGE_TAG: ${{ needs.bump.outputs.version }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+  code-analysis:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - uses: sonarsource/sonarqube-scan-action@master
+        with:
+          args: |
+              -Dsonar.branch.name=${{ github.ref_name }}
+              -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
