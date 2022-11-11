@@ -34,8 +34,8 @@ jobs:
             -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
         env:
-          SONAR_TOKEN: ${{ inputs.sonar_token }}
-          SONAR_HOST_URL: ${{ inputs.sonar_host }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
 
       
