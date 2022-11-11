@@ -1,12 +1,12 @@
 name: Test - pull request to develop
 
 on:
-  push: # pull_request:
-    # types: [opened, synchronize, reopened, ready_for_review]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches:
-      - "ci/cd-testing"
-    # paths:
-    #   - "backend/src/**"
+      - "master"
+    paths:
+      - "backend/src/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -18,29 +18,25 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - uses: actions/checkout@v2
-      # - uses: amannn/action-semantic-pull-request@v4
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: amannn/action-semantic-pull-request@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - uses: sonarsource/sonarqube-scan-action@master
-      #   with:
-      #     args: |
-      #       -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref  }}
-      #       -Dsonar.pullrequest.key=${{ github.event.pull_request.number  }}
-      #       -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref  }}
-      #       -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-      #   env:
-      #     SONAR_TOKEN: ${{ inputs.sonar_token }}
-      #     SONAR_HOST_URL: ${{ inputs.sonar_host }}
-
-
-      #${{ github.ref_name  }}
+  code-analysis:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    steps:
       - uses: sonarsource/sonarqube-scan-action@master
         with:
           args: |
-              -Dsonar.branch.name=master
-              -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+            -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ inputs.sonar_token }}
+          SONAR_HOST_URL: ${{ inputs.sonar_host }}
+
+
+      
   

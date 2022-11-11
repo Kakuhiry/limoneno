@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ master ]
-    # paths:
-    #   - "frontend/src/**"
+    paths:
+      - "frontend/src/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

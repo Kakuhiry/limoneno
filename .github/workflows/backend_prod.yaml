@@ -2,9 +2,9 @@ name: Deploy to ECR - Backend
 on:
   workflow_dispatch:
   push:
-    branches: [ ci/cd-testing ]
-    # paths:
-    #   - "backend/src/**"
+    branches: [ push ]
+    paths:
+      - "backend/src/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
