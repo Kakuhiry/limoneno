@@ -2,7 +2,7 @@ name: Deploy to ECR - Frontend
 on:
   workflow_dispatch:
   push:
-    branches: [ ci/cd-testing ]
+    branches: [ master ]
     # paths:
     #   - "frontend/src/**"
 
