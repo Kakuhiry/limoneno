@@ -14,6 +14,8 @@ jobs:
   bump:
     name: Bump version
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.prop }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -23,8 +25,10 @@ jobs:
         node-version: 14
   
     - name: App versioning
+      working-directory: backend
       run: |
-        cd backend && npm version patch
+        npm config set git-tag-version false
+        npm version patch
 
     - name: Configure git
       run: |
@@ -88,4 +92,3 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          
